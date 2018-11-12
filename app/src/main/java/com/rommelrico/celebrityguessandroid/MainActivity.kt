@@ -1,10 +1,14 @@
 package com.rommelrico.celebrityguessandroid
 
+import android.os.AsyncTask
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
+import java.io.InputStreamReader
+import java.net.HttpURLConnection
+import java.net.URL
 import java.util.ArrayList
 
 class MainActivity : AppCompatActivity() {
@@ -20,6 +24,36 @@ class MainActivity : AppCompatActivity() {
     var button2: Button? = null
     var button3: Button? = null
 
+    inner class DownloadTask: AsyncTask<String, Void, String>() {
+
+        override fun doInBackground(vararg urls: String): String? {
+            var result = ""
+            val url: URL
+            var urlConnection: HttpURLConnection? = null
+
+            try {
+                url = URL(urls[0])
+                urlConnection = url.openConnection() as HttpURLConnection
+
+                val input = urlConnection.inputStream
+                val reader = InputStreamReader(input)
+                var data = reader.read()
+
+                while (data != -1) {
+                    val current = data.toChar()
+                    result += current
+                    data = reader.read()
+                }
+
+                return result
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+                return null
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -29,7 +63,7 @@ class MainActivity : AppCompatActivity() {
         button1 = findViewById(R.id.button1)
         button2 = findViewById(R.id.button2)
         button3 = findViewById(R.id.button3)
-        
+
     }
 
     fun celebChosen(view: View) {
