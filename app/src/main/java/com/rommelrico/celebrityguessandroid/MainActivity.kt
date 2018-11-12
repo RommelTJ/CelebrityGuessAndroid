@@ -73,6 +73,39 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    fun newQuestion() {
+        try {
+            val rand = Random()
+            chosenCeleb = rand.nextInt(celebURLs.size)
+            val imageTask = ImageDownloader()
+            val celebImage = imageTask.execute(celebURLs[chosenCeleb]).get()
+            imageView?.setImageBitmap(celebImage)
+            locationOfCorrectAnswer = rand.nextInt(4)
+
+            var incorrectAnswerLocation: Int
+            for (i in 0..3) {
+                if (i == locationOfCorrectAnswer) {
+                    answers[i] = celebNames[chosenCeleb]
+                } else {
+                    incorrectAnswerLocation = rand.nextInt(celebURLs.size)
+
+                    while (incorrectAnswerLocation == chosenCeleb) {
+                        incorrectAnswerLocation = rand.nextInt(celebURLs.size)
+                    }
+
+                    answers[i] = celebNames[incorrectAnswerLocation]
+                }
+            }
+
+            button0?.text = answers[0]
+            button1?.text = answers[1]
+            button2?.text = answers[2]
+            button3?.text = answers[3]
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
