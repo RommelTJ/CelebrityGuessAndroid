@@ -12,6 +12,7 @@ import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
 import java.util.*
+import java.util.regex.Pattern
 
 class MainActivity : AppCompatActivity() {
 
@@ -116,6 +117,31 @@ class MainActivity : AppCompatActivity() {
         button2 = findViewById(R.id.button2)
         button3 = findViewById(R.id.button3)
 
+        val task = DownloadTask()
+        var result: String? = null
+
+        try {
+            result = task.execute("http://www.posh24.se/kandisar").get()
+
+            val splitResult = result!!.split("<div class=\"listedArticles\">".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+            var p = Pattern.compile("img src=\"(.*?)\"")
+            var m = p.matcher(splitResult[0])
+
+            while (m.find()) {
+                celebURLs.add(m.group(1))
+            }
+
+            p = Pattern.compile("alt=\"(.*?)\"")
+            m = p.matcher(splitResult[0])
+
+            while (m.find()) {
+                celebNames.add(m.group(1))
+            }
+
+            newQuestion()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     fun celebChosen(view: View) {
