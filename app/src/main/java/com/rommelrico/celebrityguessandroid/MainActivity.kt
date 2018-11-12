@@ -1,5 +1,7 @@
 package com.rommelrico.celebrityguessandroid
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.AsyncTask
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
@@ -9,7 +11,7 @@ import android.widget.ImageView
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
-import java.util.ArrayList
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -52,6 +54,23 @@ class MainActivity : AppCompatActivity() {
                 return null
             }
         }
+    }
+
+    inner class ImageDownloader: AsyncTask<String, Void, Bitmap>() {
+
+        override fun doInBackground(vararg urls: String): Bitmap? {
+            try {
+                val url = URL(urls[0])
+                val connection = url.openConnection() as HttpURLConnection
+                connection.connect()
+                val inputStream = connection.inputStream
+                return BitmapFactory.decodeStream(inputStream)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                return null
+            }
+        }
+
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
