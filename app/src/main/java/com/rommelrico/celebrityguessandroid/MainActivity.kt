@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.Toast
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
@@ -145,7 +146,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun celebChosen(view: View) {
-        // Placeholder.
+        if (view.tag.toString() == Integer.toString(locationOfCorrectAnswer)) {
+            Toast.makeText(applicationContext, "Correct!", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(applicationContext, "Wrong! It was ${celebNames[chosenCeleb]}", Toast.LENGTH_SHORT).show()
+        }
+
+        newQuestion()
     }
 
 }
